@@ -4,7 +4,7 @@ This project provides a starting point for building an ETL pipeline using SQL Se
 The primary goal of the project is to provide a basic solution for anyone who is building a new ETL pipeline using SSIS.
 # Prerequisites
 * Visual Studio 2019 installed. Note Visual Studio 2017 works slightly different regarding SSIS and this article may not work exactly for Visual Studio 2017.
-* Install SQL Server Integration Services in Visual Studio 2019 (https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/)
+* <a href="https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/">Install SQL Server Integration Services in Visual Studio 2019 </a>
 * SQL Server already installed.
 # Overview
 The dataset represents a sample dataset for a bicycle company. Our objective is to design and implement an ETL solution to generate sales reports per employee, sales reports by region, reports on the number of orders by employee, reports on the number of orders by region, reports on sales by product subcategory, and reports on sales by product and region.
