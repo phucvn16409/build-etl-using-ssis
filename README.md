@@ -6,10 +6,12 @@ The primary goal of the project is to provide a basic solution for anyone who is
 * Visual Studio 2019 installed. Note Visual Studio 2017 works slightly different regarding SSIS and this article may not work exactly for Visual Studio 2017.
 * Install SQL Server Integration Services in Visual Studio 2019 (https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/)
 * SQL Server already installed.
+# Overview
+The dataset represents a sample dataset for a bicycle company. Our objective is to design and implement an ETL solution to generate sales reports per employee, sales reports by region, reports on the number of orders by employee, reports on the number of orders by region, reports on sales by product subcategory, and reports on sales by product and region.
 # First-time ETL 
 Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.
 1. <a href="./DataSource">Download source data for practice </a>
-2. Design a data warehouse architecture <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
+2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
 3. Create a data warehouse database in SQL Server <a href="./DataSource/#">`Scripts` </a>
 4. Create a staging area database in SQL Server  <a href="./DataSource/#">`Scripts` </a>
 5. Extract data from the source into the staging area <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
