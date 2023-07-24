@@ -11,10 +11,10 @@ The dataset represents a sample dataset for a bicycle company. Our objective is 
 # First-time ETL 
 Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.
 1. <a href="./DataSource">Download source data for practice </a>
-2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
+2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
 3. Create a data warehouse database in SQL Server <a href="./DataSource/#">`Scripts` </a>
 4. Create a staging area database in SQL Server  <a href="./DataSource/#">`Scripts` </a>
-5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
+5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/#"></p>
 6. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="align"><img width="600" src="Images/Fig1.jpg"></p>
 7. Load dimension tables level 1 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
 8. Load dimension tables level 2 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
