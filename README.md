@@ -14,17 +14,19 @@ The dataset represents a sample dataset for a bicycle company. Our objective is 
 <img width=100% src="Images/ETL-process.svg">
  # First-time ETL 
 Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.
+
 1. <a href="https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#tabpanel_1_ssms)">Import source data into SQL Server Management Studio (SSMS)</a>
 2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
 3. Create a data warehouse database in SQL Server <a href="./Scripts/AVW_datawarehouse_createDatabase.sql">`Scripts` </a>
 4. Create a staging area database in SQL Server  <a href="./Scripts/AVW_staging_createDatabase.sql">`Scripts` </a>
 5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/extractDataSource.jpg"></p>
 6. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="left"><img width=100% src="Images/transformsData.jpg"></p>
-7. Load dimension tables level 1 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
-8. Load dimension tables level 2 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
-9. Load dimension tables level 3 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
-10. Load fact tables from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
-11. Execute the truncate table command on the dimension and fact tables in the staging area to prepare for the subsequent ETL processes
+7. Load dimension tables level 1 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel1.jpg"></p>
+8. Load dimension tables level 2 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel2.jpg"></p>
+9. Load dimension tables level 3 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel3.jpg"></p>
+10. Load fact SalesOrder tables from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_FactSalesOrder.jpg"></p>
+11. Load fact Product tables from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_FactProduct.jpg"></p>
+12. Execute the truncate table command on the dimension and fact tables in the staging area to prepare for the subsequent ETL processes <p align="center"><img width=100% src="Images/truncate_dim_fact_staging.jpg"></p>
 
 # Next-time ETL
 From the source data, only extract the newly added, updated or deleted data to perform the ETL process
