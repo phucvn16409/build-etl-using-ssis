@@ -18,8 +18,8 @@ Build a staging area, design a data warehouse architecture, and create an SSIS p
 2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
 3. Create a data warehouse database in SQL Server <a href="./Scripts/AVW_datawarehouse_createDatabase.sql">`Scripts` </a>
 4. Create a staging area database in SQL Server  <a href="./Scripts/AVW_staging_createDatabase.sql">`Scripts` </a>
-5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/#"></p>
-6. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="align"><img width="600" src="Images/Fig1.jpg"></p>
+5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/extractDataSource.jpg"></p>
+6. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="left"><img width=100% src="Images/transformsData.jpg"></p>
 7. Load dimension tables level 1 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
 8. Load dimension tables level 2 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
 9. Load dimension tables level 3 from the staging area into the data warehouse <p align="center"><img width="500" src="Images/Fig1.jpg"></p>
