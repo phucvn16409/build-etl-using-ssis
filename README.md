@@ -13,8 +13,7 @@ The dataset represents a sample dataset for a bicycle company. Our objective is 
 <br><br><i> Overview ETL process </i>
 <img width=100% src="Images/ETL-process.svg">
  # First-time ETL 
-Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.
-
+Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.<br><br><i> Overview  First-time ETL process </i> <p align="left"><img width=100% src="Images/overview_etlfirsttime.jpg"></p>
 1. <a href="https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#tabpanel_1_ssms)">Import source data into SQL Server Management Studio (SSMS)</a>
 2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
 3. Create a data warehouse database in SQL Server <a href="./Scripts/AVW_datawarehouse_createDatabase.sql">`Scripts` </a>
