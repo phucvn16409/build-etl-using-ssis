@@ -7,7 +7,7 @@ The primary goal of the project is to provide a basic solution for anyone who is
 * <a href="https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/">Install SQL Server Integration Services in Visual Studio 2019 </a>
 * SQL Server already installed.
 * SQL Server Management Studio (SSMS) installed
-* The data source is the database of AdventureWorks 2019. <a href="https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/">`Download here`
+* The data source is the database of AdventureWorks 2019. <a href="https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2019.bak">`Download here`
 # Overview
 The dataset represents a sample dataset for a bicycle company. Our objective is to design and implement an ETL solution to generate sales reports per employee, sales reports by region, reports on the number of orders by employee, reports on the number of orders by region, reports on sales by product subcategory, and reports on sales by product and region.
 # First-time ETL 
