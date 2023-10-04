@@ -58,7 +58,7 @@ The second stream will solely extract the IDs column from the source and store t
 8. Execute the truncate table command on the dimension and fact tables in the staging area to prepare for the subsequent ETL processes, following the same concept as in step 12 of First-time ETL 
 
 -----------------------------------
-!!! I HAVE PLACED ALL THE CODE FOR SSIS IN THE PACKAGE SECTION `Package-SSIS`
+!!! I HAVE PLACED ALL THE CODE FOR SSIS IN THE PACKAGE SECTION `Package-SSIS` <br>
 If you have any questions about the code or encounter any issues while creating your ETL flow, please do not hesitate to contact me via email. Thank you.
 
 
