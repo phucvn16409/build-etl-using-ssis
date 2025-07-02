@@ -1,65 +1,148 @@
-# Build an ETL pipeline using SSIS
-This project provides a starting point for building an ETL pipeline using SQL Server Integration Services (SSIS) in Visual Studio 2019.
-# Goal
-The primary goal of the project is to provide a basic solution for anyone who is building a new ETL pipeline using SSIS.
-# Prerequisites
-* Visual Studio 2019 installed. Note Visual Studio 2017 works slightly different regarding SSIS and this article may not work exactly for Visual Studio 2017.
-* <a href="https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/">Install SQL Server Integration Services in Visual Studio 2019 </a>
-* SQL Server already installed.
-* SQL Server Management Studio (SSMS) installed
-* The data source is the database of AdventureWorks 2019. <a href="https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2019.bak">`Download here`
-# Overview
-The dataset represents a sample dataset for a bicycle company. Our objective is to design and implement an ETL solution to generate sales reports per employee, sales reports by region, reports on the number of orders by employee, reports on the number of orders by region, reports on sales by product subcategory, and reports on sales by product and region.
-<br><br><i> Overview - ETL Architecture Design </i>
-<img width=100% src="Images/ETL-process.svg">
- # First-time ETL 
-Build a staging area, design a data warehouse architecture, and create an SSIS package to extract, transform, and load data from the source into the data warehouse.<br><br><i> Overview - First-time ETL process </i> <p align="left"><img width=100% src="Images/overview_etlfirsttime1.jpg"></p>
-1. <a href="https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#tabpanel_1_ssms)">Import source data into SQL Server Management Studio (SSMS)</a>
-2. Design a data warehouse architecture to serve reports for the above-mentioned overview section  <p align="left"><img width=100% src="Images/database.diagrams.jpg"></p>
-3. Create a data warehouse database in SQL Server <a href="./Scripts/AVW_datawarehouse_createDatabase.sql">`Scripts` </a>
-4. Create a staging area database in SQL Server  <a href="./Scripts/AVW_staging_createDatabase.sql">`Scripts` </a>
-5. Extract data from the source into the staging area <p align="left"><img width=100% src="Images/extractDataSource.jpg"></p>
-6. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="left"><img width=100% src="Images/transformsData.jpg"></p>
-7. Load dimension tables level 1 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel1.jpg"></p>
-8. Load dimension tables level 2 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel2.jpg"></p>
-9. Load dimension tables level 3 from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_DimLevel3.jpg"></p>
-10. Load fact SalesOrder tables from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_FactSalesOrder.jpg"></p>
-11. Load fact Product tables from the staging area into the data warehouse <p align="center"><img width=100% src="Images/load_FactProduct.jpg"></p>
-12. Execute the truncate table command on the dimension and fact tables in the staging area to prepare for the subsequent ETL processes <p align="center"><img width=100% src="Images/truncate_dim_fact_staging.jpg"></p>
+# Build an ETL Pipeline using SSIS
 
-# Next-time ETL
-From the source data, only extract the newly added, updated or deleted data to perform the ETL process
-## Solution Idea
-* <b>New and updated records:</b> use `Slowly Changing Dimension` and `Lookup Transformation` to compare the data from the source with the data saved to the staging area previously <br>
-<i>!Tips: You should refer to the articles below to understand how to use `Slowly Changing Dimension` and `Lookup Transformation`</i><br>
-<a href="https://sqlgiant.wordpress.com/2012/03/18/slowly-changing-dimension-type-1-with-lookup-and-conditional-split/">Slowly Changing Dimension with Lookup and Conditional Split </a><br>
-<a href="https://sqlgiant.wordpress.com/2012/03/21/an-alternative-to-the-ole-db-command-to-update-slowly-changing-dimensions/">An Alternative to the OLE DB Command to update Slowly Changing Dimensions </a>
-* <b> Deleted records:</b> In the design of the staging area and the data warehouse for the first time, the tables will include an "IsDeleted" column with a default value of 0. Before extracting data from the source, we will update the "IsDeleted" column to a value of 1 for the corresponding rows. During the data extraction process, we will update the "IsDeleted" values to 0 for the rows that satisfy the conditions, matching the IDs between the source data and the previously retrieved staging area. By doing this, the records with a value of 1 in the "IsDeleted" column will represent the deleted records in the source data.
-<br><br><i> Overview - Next-time ETL process </i> <p align="left"><img width=100% src="Images/overview_etlnexttime.jpg"></p>
-## Tasks
-1. Update the "IsDeleted" column in Staging area to 1 for corresponding rows before extracting data from the source.<p align="left"><img width=100% src="Images/Updated_Stag_IsDeleted_1.jpg"></p>
-2. Extract the newly added, updated or deleted data from the source into the staging <br><p>Using `Slowly Changing Dimension` 
-for tables with small data</p>
-Retrieve data from the source and split it into two streams. The first stream will utilize Slowly Changing Dimensions (SCDs) to add new records (those with distinct IDs compared to the ones already present in the Staging area) and update existing data with records having the same IDs but different information in the remaining fields. On the other hand, the second stream will focus on updating the IsDeleted column to zero for records whose IDs from the source match the IDs of the records in the staging area <p align="left"><img width=100% src="Images/scds.jpg"></p>
-<br><p>Using `Lookup Transformation` for tables with large data</p>
-Retrieve the data from the source and divide it into two streams. The initial stream will employ a Lookup on the IDs column to identify records with IDs originating from a different source than those in the Staging area. These new records will be added accordingly. For records with identical IDs, utilize an additional lookup block to update the modified data in the remaining fields.<br>
-The second stream will solely extract the IDs column from the source and store them in the 'Updated_IsDelete_nameTable' table within the Staging area. This process will facilitate a subsequent bulk update on the IsDeleted column of the corresponding tables. <p align="left"><img width=100% src="Images/lookup.jpg"></p>
-3. Utilize the 'Execute SQL Task' block to update the IsDeleted column with a value of 0 in the corresponding tables (Person, OrderHeader, and OrderDetail tables). This update will occur when the records' IDs in the corresponding tables match the IDs in the 'Update_IsDelete_nameTable' table, which were obtained in the task mentioned earlier. Once the previous tasks are completed, you can add an additional "Execute SQL Task" block to truncate the 'Update_IsDelete_nameTable' table to prepare it for reuse in the next ETL <p align="left"><img width=100% src="Images/Updated_Stag_IsDeleted_0.jpg"></p>
-4. Delete records whose value in column IsDeleted is equal to 1 in the staging area of ​​each respective table <p align="left"><img width=100% src="Images/Deleted_Stag_IsDeleted_1.jpg"></p>
-5. Transform data in the staging area into dimension and fact tables and save it in the staging area <p align="left"><img width=100% src="Images/transformsData.jpg"></p>
-6. Update the "IsDeleted" column to 1 for the corresponding rows in both the Dimension and Fact tables in the data warehouse, following the same concept as in the staging area  <p align="left"><img width=100% src="Images/Updated_DW_IsDeleted_1.jpg"></p>
-7. Load the newly added, updated or deleted data of the Dimension and Fact table from the staging into the data warehouse are by using `Slowly Changing Dimension` and `Lookup Transformation` and update "IsDeleted" values to 0 for rows that meet the conditions, matching IDs between the staging and previously loaded data warehouse, following the same concept as in step 2, 3. <br><i>Note! We will not use the "hard delete" technique like step 4, but only implement the "soft delete" technique in the data warehouse </i><br>
-<br><i> Load dimension tables level 1 </i> <p align="left"><img width=100% src="Images/dimLV1.jpg"></p>
-<br><i> Load dimension tables level 2 </i> <p align="left"><img width=100% src="Images/dimLV2.jpg"></p>
-<br><i> Load dimension tables level 3 </i> <p align="left"><img width=100% src="Images/dimLV3.jpg"></p>
-<br><i> Load fact SalesOrder tables </i> <p align="left"><img width=100% src="Images/factSalesOrder.jpg"></p>
-<br><i> Load fact Product tables </i> <p align="left"><img width=100% src="Images/factProduct.jpg"></p>
-<br><i> Update the IsDeleted column with a value of 0 in the corresponding tables and truncate Update_IsDeleted_nameTable in DW after the update is complete </i> <p align="left"><img width=100% src="Images/Updated_DW_FactProduct.jpg"></p>
-8. Execute the truncate table command on the dimension and fact tables in the staging area to prepare for the subsequent ETL processes, following the same concept as in step 12 of First-time ETL 
+This project provides a comprehensive guide for building an ETL (Extract, Transform, Load) pipeline using SQL Server Integration Services (SSIS) in **Visual Studio 2019**.
 
------------------------------------
-!!! I HAVE PLACED ALL THE CODE FOR SSIS IN THE PACKAGE SECTION `Package-SSIS` <br>
-If you have any questions about the code or encounter any issues while creating your ETL flow, please do not hesitate to contact me via email. Thank you.
+---
 
+## 🎯 Goal
 
-  
+The primary goal of this project is to provide a basic yet practical solution for anyone looking to build a new ETL pipeline using SSIS, with **AdventureWorks 2019** as the sample data source.
+
+---
+
+## ✅ Prerequisites
+
+Make sure the following components are installed and properly configured:
+
+- **Visual Studio 2019**  
+  *Note: Visual Studio 2017 is also supported, but SSIS integration may behave differently.*
+
+- **SQL Server Integration Services (SSIS) Extension for VS 2019**  
+  👉 [Install SSIS for Visual Studio 2019](https://www.mssqltips.com/sqlservertip/6481/install-sql-server-integration-services-in-visual-studio-2019/)
+
+- **SQL Server** (any supported edition)
+
+- **SQL Server Management Studio (SSMS)**
+
+- **AdventureWorks 2019 Sample Database**  
+  📦 [Download AdventureWorks2019.bak](https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2019.bak)
+
+---
+
+## 🧭 Project Overview
+
+The dataset simulates a sample retail system for a bicycle company. The objective is to build an end-to-end ETL pipeline to generate a variety of reports:
+
+- Sales reports by employee
+- Sales reports by region
+- Number of orders per employee
+- Number of orders per region
+- Sales by product subcategory
+- Sales by product and region
+
+<i>ETL Architecture Overview</i>  
+<img width="100%" src="Images/ETL-process.svg" alt="ETL Architecture">
+
+---
+
+## 🛠️ First-time ETL
+
+Build the staging area, design the data warehouse, and create SSIS packages to perform initial extraction, transformation, and loading of data.
+
+<i>ETL Process - First Run</i>  
+<img width="100%" src="Images/overview_etlfirsttime1.jpg" alt="First ETL Overview">
+
+### Steps:
+
+1. [Import source data into SSMS](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms#tabpanel_1_ssms)
+2. Design a data warehouse schema to support reporting  
+   <img src="Images/database.diagrams.jpg" width="100%">
+3. Create the data warehouse  
+   [`AVW_datawarehouse_createDatabase.sql`](./Scripts/AVW_datawarehouse_createDatabase.sql)
+4. Create the staging database  
+   [`AVW_staging_createDatabase.sql`](./Scripts/AVW_staging_createDatabase.sql)
+5. Extract data into the staging area  
+   <img src="Images/extractDataSource.jpg" width="100%">
+6. Transform source data into dimensions and facts  
+   <img src="Images/transformsData.jpg" width="100%">
+7. Load dimension tables (Level 1)  
+   <img src="Images/load_DimLevel1.jpg" width="100%">
+8. Load dimension tables (Level 2)  
+   <img src="Images/load_DimLevel2.jpg" width="100%">
+9. Load dimension tables (Level 3)  
+   <img src="Images/load_DimLevel3.jpg" width="100%">
+10. Load SalesOrder fact table  
+    <img src="Images/load_FactSalesOrder.jpg" width="100%">
+11. Load Product fact table  
+    <img src="Images/load_FactProduct.jpg" width="100%">
+12. Truncate all dimension and fact tables in the staging area to prepare for future ETL runs  
+    <img src="Images/truncate_dim_fact_staging.jpg" width="100%">
+
+---
+
+## 🔁 Next-time ETL
+
+Incrementally extract **only the new, updated, or deleted** records from the source and process them.
+
+### 💡 Solution Strategy
+
+- **New & Updated Records:**  
+  Use `Slowly Changing Dimension (SCD)` and `Lookup Transformation` to compare incoming data with existing staging data.  
+  - [SCD + Lookup + Conditional Split](https://sqlgiant.wordpress.com/2012/03/18/slowly-changing-dimension-type-1-with-lookup-and-conditional-split/)
+  - [Update SCD without OLE DB Command](https://sqlgiant.wordpress.com/2012/03/21/an-alternative-to-the-ole-db-command-to-update-slowly-changing-dimensions/)
+
+- **Deleted Records:**  
+  Mark records as deleted by using an `IsDeleted` column. Set it to `1` before loading, and back to `0` if matched with source data. Remaining `1` values indicate deletions.
+
+<i>Next-time ETL Architecture</i>  
+<img src="Images/overview_etlnexttime.jpg" width="100%">
+
+---
+
+### 🔨 Next-time ETL Tasks
+
+1. Set `IsDeleted = 1` in staging for all records before extraction  
+   <img src="Images/Updated_Stag_IsDeleted_1.jpg" width="100%">
+2. Extract new/updated/deleted records using:
+   - `SCD` for small datasets  
+     <img src="Images/scds.jpg" width="100%">
+   - `Lookup Transformation` for large datasets  
+     <img src="Images/lookup.jpg" width="100%">
+3. Use `Execute SQL Task` to:
+   - Set `IsDeleted = 0` for matched IDs
+   - Truncate `Update_IsDelete_nameTable` after update  
+     <img src="Images/Updated_Stag_IsDeleted_0.jpg" width="100%">
+4. Delete records in staging with `IsDeleted = 1`  
+   <img src="Images/Deleted_Stag_IsDeleted_1.jpg" width="100%">
+5. Transform staging data into dimension and fact formats  
+   <img src="Images/transformsData.jpg" width="100%">
+6. Update `IsDeleted = 1` in DW for records not matched  
+   <img src="Images/Updated_DW_IsDeleted_1.jpg" width="100%">
+7. Load changes to DW using `SCD` and `Lookup`, but apply only **soft deletes** (do not delete rows)
+   - Load Dimension Level 1  
+     <img src="Images/dimLV1.jpg" width="100%">
+   - Load Dimension Level 2  
+     <img src="Images/dimLV2.jpg" width="100%">
+   - Load Dimension Level 3  
+     <img src="Images/dimLV3.jpg" width="100%">
+   - Load SalesOrder Facts  
+     <img src="Images/factSalesOrder.jpg" width="100%">
+   - Load Product Facts  
+     <img src="Images/factProduct.jpg" width="100%">
+   - Update `IsDeleted = 0` and truncate helper table  
+     <img src="Images/Updated_DW_FactProduct.jpg" width="100%">
+8. Truncate all staging dimension/fact tables again to prepare for next cycle
+
+---
+
+## 📁 Package Location
+
+All SSIS packages are available in the `/Package-SSIS` directory.
+
+---
+
+## 📬 Need Help?
+
+If you have any questions or encounter any issues while implementing the ETL flow, feel free to reach out via email.
+
+Thank you for your interest and happy building!
